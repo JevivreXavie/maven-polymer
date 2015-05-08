@@ -1,0 +1,80 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../post-service/post-service.html">
+<link rel="import" href="../ds-row-widget/post-card.html">
+
+<polymer-element name="post-list" attributes="show">
+  <template>
+    <style>
+/*    :host {
+      display: block;
+      width: 30%;
+    }*/
+    post-card {
+      margin-bottom: 30px;
+      margin: 4px;
+      padding: 12px;
+/*      width: 500px;*/
+    }
+    </style>
+
+    <post-service id="service" posts="{{posts}}"></post-service>
+    
+   <div horizontal center-justified layout wrap >
+      <template repeat="{{post in posts}}">
+        <div  >
+          <post-card
+          favorite="{{post.favorite}}"
+          on-favorite-tap="{{handleFavorite}}"
+          hidden?="{{show == 'favorites' && !post.favorite}}">
+          
+          <img src="{{post.avatar}}" width="150" height="150">
+          <h2>{{post.username}}</h2>
+          
+        </post-card>
+        </div>
+      </template>
+
+    
+    </div>
+  </template>
+
+  <script>
+  Polymer({
+    handleFavorite: function(event, detail, sender) {
+      var post = sender.templateInstance.model.post;
+      this.$.service.setFavorite(post.uid, post.favorite);
+    },
+    arrangements: [[
+    [1, 1, 1, 1],
+    [2, 3, 3, 4],
+    [2, 3, 3, 5]
+  ], [
+    [4, 3, 2],
+    [5, 3, 2],
+    [5, 1, 1]
+  ], [
+    [1, 1],
+    [2, 3],
+    [4, 3]
+  ]],
+
+  outputLayout: 0,
+
+  ready: function() {
+    this.outputLayoutChanged();
+  },
+
+  outputLayoutChanged: function() {
+    this.layout = this.arrangements[this.outputLayout];
+  },
+
+  toggleLayout: function() {
+    this.outputLayout = (this.outputLayout + 1) % this.arrangements.length;
+  },
+
+  rotate: function() {
+    this.toggleLayout();
+  }
+  });
+  </script>
+</polymer-element>
